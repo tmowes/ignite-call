@@ -2,5 +2,8 @@
   "extends": [
     "@piktew/eslint-config-react",
     "next/core-web-vitals"
-  ]
+  ],
+  "rules": {
+    "jsx-a11y/label-has-associated-control": "off"
+  }
 }
