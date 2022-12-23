@@ -9,7 +9,7 @@ import { AuthError, ConnectBox, ConnectItem } from './styles'
 
 export default function ConnectCalendarPage() {
   const { data: sessionData, status } = useSession()
-  const { query } = useRouter()
+  const { query, push } = useRouter()
   const hasAuthError = !!query.error
   const isSignedIn = status === 'authenticated'
 
@@ -17,6 +17,9 @@ export default function ConnectCalendarPage() {
     signIn('google')
   }
 
+  const onNavigateToNextPage = async () => {
+    await push('/register/time-intervals')
+  }
   return (
     <Container>
       <Header>
@@ -28,7 +31,7 @@ export default function ConnectCalendarPage() {
         <MultiStep size={4} currentStep={2} />
       </Header>
       <ConnectBox>
-        {/* <Text size="sm">{JSON.stringify(sessionData)}</Text> */}
+        <Text size="sm">{JSON.stringify(sessionData?.user)}</Text>
         <ConnectItem>
           <Text size="sm">Google Calendar</Text>
           {isSignedIn ? (
@@ -49,7 +52,7 @@ export default function ConnectCalendarPage() {
             Google Calendar
           </AuthError>
         )}
-        <Button type="submit" disabled={!isSignedIn}>
+        <Button type="submit" disabled={!isSignedIn} onClick={onNavigateToNextPage}>
           Próximo passo
           <ArrowRight />
         </Button>

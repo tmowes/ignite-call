@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import { Adapter } from 'next-auth/adapters'
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse, NextPageContext } from 'next'
 
 import { parseCookies, destroyCookie } from 'nookies'
 
@@ -10,15 +10,22 @@ import { PrismaUserMapper } from './prisma-user-mappers'
 import { PrismaSessionMapper } from './prisma-session-mappers'
 import { COOKIE_USERID } from '../../helpers/cookie'
 
-export function PrismaAdapter(req: NextApiRequest, res: NextApiResponse): Adapter {
+export function PrismaAdapter(
+  req: NextApiRequest | NextPageContext['req'],
+  res: NextApiResponse | NextPageContext['res'],
+): Adapter {
   return {
     async createUser(user) {
-      const { COOKIE_USERID: userIdOnCookie } = parseCookies({ req })
-      if (!userIdOnCookie) {
+      const { '@ignitecall:userId': userIdOnCookies } = parseCookies({ req })
+
+      console.log({ userIdOnCookies, user })
+
+      if (!userIdOnCookies) {
         throw new Error('User id is required to create user')
       }
+
       const newUser = await prisma.user.update({
-        where: { id: userIdOnCookie },
+        where: { id: userIdOnCookies },
         data: PrismaUserMapper.toPrisma(user),
       })
       destroyCookie({ res }, COOKIE_USERID, { path: '/' })

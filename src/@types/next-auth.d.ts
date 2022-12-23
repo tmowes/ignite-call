@@ -11,4 +11,8 @@ declare module 'next-auth' {
   }
 
   interface DefaultUser extends User {}
+
+  interface Session {
+    user: User
+  }
 }

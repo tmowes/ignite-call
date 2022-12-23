@@ -1,11 +1,14 @@
 /* eslint-disable no-return-await */
 import NextAuth, { NextAuthOptions } from 'next-auth'
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse, NextPageContext } from 'next'
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google'
 
 import { PrismaAdapter } from '../../../libs/next-auth/adapter'
 
-export function buildNextAuthOptions(req: NextApiRequest, res: NextApiResponse) {
+export function buildNextAuthOptions(
+  req: NextApiRequest | NextPageContext['req'],
+  res: NextApiResponse | NextPageContext['res'],
+) {
   return {
     adapter: PrismaAdapter(req, res),
     providers: [
