@@ -1,7 +1,7 @@
 /* eslint-disable no-return-await */
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import GoogleProvider from 'next-auth/providers/google'
+import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google'
 
 import { PrismaAdapter } from '../../../libs/next-auth/adapter'
 
@@ -18,6 +18,16 @@ export function buildNextAuthOptions(req: NextApiRequest, res: NextApiResponse) 
               'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/calendar',
           },
         },
+        profile(profile: GoogleProfile) {
+          return {
+            id: profile.sub,
+            name: profile.name,
+            username: '',
+            email: profile.email,
+            emailVerified: null,
+            avatar_url: profile.picture,
+          }
+        },
       }),
     ],
     callbacks: {
@@ -26,6 +36,9 @@ export function buildNextAuthOptions(req: NextApiRequest, res: NextApiResponse) 
           return '/register/connect-calendar?error=permissions'
         }
         return true
+      },
+      async session({ session, user }) {
+        return { ...session, user }
       },
     },
   } as NextAuthOptions
