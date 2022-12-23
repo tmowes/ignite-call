@@ -5,12 +5,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Heading, MultiStep, Text, TextInput } from '@ignite-ui/react'
 import { ArrowRight } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
+import { AxiosError } from 'axios'
 
 import { registerDefault, RegisterFormData, registerFormSchema } from './schema'
 import { Container, Form, FormError, Header } from './styles'
+import { api } from '../../libs/axios'
 
-export default function RegisterPage() {
-  const { push, query } = useRouter()
+export default function RegisterPage(props: any) {
+  const { query } = useRouter()
 
   const {
     register,
@@ -23,9 +25,17 @@ export default function RegisterPage() {
   })
 
   const onSubmit = async (data: RegisterFormData) => {
-    const { username } = data
-    await push(`/register/${username}`)
-    console.log(data)
+    const { username, name } = data
+    try {
+      await api.post('/users', { name, username })
+    } catch (error) {
+      if (error instanceof AxiosError && error?.response?.data?.messsage) {
+        // eslint-disable-next-line no-alert
+        alert(error.response.data.messsage)
+        return
+      }
+      console.error(error)
+    }
   }
 
   useEffect(() => {
