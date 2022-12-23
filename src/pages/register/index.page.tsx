@@ -11,7 +11,7 @@ import { registerDefault, RegisterFormData, registerFormSchema } from './schema'
 import { Container, Form, FormError, Header } from './styles'
 import { api } from '../../libs/axios'
 
-export default function RegisterPage(props: any) {
+export default function RegisterPage() {
   const { query } = useRouter()
 
   const {

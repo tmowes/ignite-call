@@ -1,2 +1,2 @@
-// eslint-disable-next-line no-restricted-exports
+// eslint-disable-next-line
 export { default } from './home'
