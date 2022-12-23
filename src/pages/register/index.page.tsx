@@ -12,7 +12,7 @@ import { Container, Form, FormError, Header } from './styles'
 import { api } from '../../libs/axios'
 
 export default function RegisterPage() {
-  const { query } = useRouter()
+  const { push, query } = useRouter()
 
   const {
     register,
@@ -28,6 +28,8 @@ export default function RegisterPage() {
     const { username, name } = data
     try {
       await api.post('/users', { name, username })
+
+      await push('/register/connect-calendar')
     } catch (error) {
       if (error instanceof AxiosError && error?.response?.data?.messsage) {
         // eslint-disable-next-line no-alert
@@ -70,7 +72,7 @@ export default function RegisterPage() {
           <TextInput size="sm" placeholder="Seu nome" {...register('name')} />
           {errors.name && <FormError size="sm">{errors.name.message}</FormError>}
         </label>
-        <Button size="sm" type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting}>
           Próximo passo
           <ArrowRight />
         </Button>

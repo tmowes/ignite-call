@@ -1,5 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
+import { setCookie } from 'nookies'
+
+import { COOKIE_MAX_7DAYS, COOKIE_USERID } from '../../../helpers/cookie'
 import { prisma } from '../../../libs/prisma'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -16,6 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const user = await prisma.user.create({ data: { name, username } })
+
+  setCookie({ res }, COOKIE_USERID, user.id, { maxAge: COOKIE_MAX_7DAYS, path: '/' })
 
   return res.status(201).json(user)
 }
